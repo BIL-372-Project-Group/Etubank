@@ -6,11 +6,14 @@ import java.util.Random;
 import java.util.Set;
 
 public class RandomPasswordToFile {
+
+    int numberOfCreatedPasswords = 100;
+    
     public static void main(String[] args) {
         Set<String> passwords = new HashSet<>();
         Random random = new Random();
 
-        while (passwords.size() < 100) {
+        while (passwords.size() < numberOfCreatedPasswords) {
             StringBuilder password = new StringBuilder();
 
             for (int i = 0; i < 6; i++) {
