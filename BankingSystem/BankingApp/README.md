@@ -19,5 +19,5 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 
 ## Banking Database Diagram
 
-<img width="1007" alt="database_diagram" src="https://github.com/user-attachments/assets/a7aec214-b297-4686-b0e9-7e275694871d">
+![image](https://github.com/user-attachments/assets/3a4b1139-b5e8-484a-addd-317471e22a7f)
 
