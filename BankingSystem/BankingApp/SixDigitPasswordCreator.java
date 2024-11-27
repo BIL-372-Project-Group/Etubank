@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class RandomPasswordToFile {
+public class SixDigitPasswordCreator {
 
     int numberOfCreatedPasswords = 100;
     
@@ -29,9 +29,9 @@ public class RandomPasswordToFile {
                 writer.write(password);
                 writer.newLine(); 
             }
-            System.out.println("Şifreler 'password.txt' dosyasına başarıyla yazıldı!");
+            System.out.println("Sifreler 'password.txt' dosyasina basariyla yazildi!");
         } catch (IOException e) {
-            System.err.println("Dosya yazılırken bir hata oluştu: " + e.getMessage());
+            System.err.println("Dosya yazilirken bir hata olustu: " + e.getMessage());
         }
     }
 }
