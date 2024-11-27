@@ -1,3 +1,6 @@
+package db_sys;
+
+
 public class Bank {
     private int bankId; 
     private String name; 
