@@ -5,27 +5,28 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 //interaction with MYSQL database.
 
 public class DataAccessLayer {
 
     //db configuration
-    private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/bankapp";
+    private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/etubank_test";
     private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "8%g4J0Q=r/Yg2X80{!z>";
+    private static final String DB_PASSWORD = "abc123";
 
 
-    public static customer createSession(String username, String password) {
+    public static customer createSession(String email, String password) {
         try{
             Connection connection = DriverManager.getConnection(DB_URL,DB_USERNAME,DB_PASSWORD);
 
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "SELECT * FROM customers WHERE username = ? AND password = ?"
+                    "SELECT * FROM customer WHERE email = ? AND password = ?"
             );
 
             //parameter index refers to ?
-            preparedStatement.setString(1,username);
+            preparedStatement.setString(1,email);
             preparedStatement.setString(2,password);
             //execute query and store it in result set
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -35,7 +36,9 @@ public class DataAccessLayer {
             //false query returned no data and result set equals to null
             if(resultSet.next()){
                 int customerId = resultSet.getInt("customer_id");
-                return new customer(connection, customerId);
+                customer temp = customer.getByID(connection, customerId);
+                System.out.println(temp);
+                return temp;
             }
 
         } catch (SQLException e) {
@@ -45,4 +48,5 @@ public class DataAccessLayer {
         //not valid user
         return null;
     }
+
 }

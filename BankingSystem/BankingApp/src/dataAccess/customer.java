@@ -13,24 +13,24 @@ import java.util.ArrayList;
 import dataAccess.account;
 
 public class customer {
-    int customer_id;
-    String first_name;
-    String last_name;
-    Date date_of_birth;
-    String nationality;
-    String nin;
-    Date last_login_date;
-    String email;
-    String phone_number;
-    String address;
-    String city;
-    String state;
-    String postal_code;
-    String country_of_residence;
-    String password;
+    public int customer_id;
+    public String first_name;
+    public String last_name;
+    public Date date_of_birth;
+    public String nationality;
+    public String nin;
+    public Date last_login_date;
+    public String email;
+    public String phone_number;
+    public String address;
+    public String city;
+    public String state;
+    public String postal_code;
+    public String country_of_residence;
+    public String password;
 
-    ArrayList<account> accounts;
-    ArrayList<loan> loans;
+    public ArrayList<account> accounts;
+    public ArrayList<loan> loans;
 
     public customer(int customer_id, String first_name, String last_name, Date date_of_birth, String nationality,
             String nin, Date last_login_date, String email, String phone_number, String address, String city,
@@ -57,9 +57,7 @@ public class customer {
 
     public static customer getByID(Connection connection, int id) {
         customer instance = null;
-        String query = "SELECT first_name, last_name, date_of_birth, nationality, nin, " +
-                "last_login_date, email, phone_number, address, city, state, " +
-                "postal_code, country_of_residence, password FROM customer WHERE customer_id = ?";
+        String query = "SELECT * FROM customer WHERE customer_id = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             
@@ -69,7 +67,8 @@ public class customer {
             // Execute the query
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    // Map the result set to a User object
+                        ArrayList<account> accounts = account.getByCustomerID(connection, id);
+                        ArrayList<loan> loans = null;//loan.getByCustomerID(connection, id);
                     instance = new customer(
                             id,
                             resultSet.getString("first_name"),
@@ -86,8 +85,8 @@ public class customer {
                             resultSet.getString("postal_code"),
                             resultSet.getString("country_of_residence"),
                             resultSet.getString("password"),
-                            null,
-                            null
+                            accounts,
+                            loans
                     );
                 }
             }
@@ -95,5 +94,15 @@ public class customer {
             e.printStackTrace(); // Handle SQL exceptions
         }
         return instance;
+    }
+
+    @Override
+    public String toString() {
+        return "customer [customer_id=" + customer_id + ", first_name=" + first_name + ", last_name=" + last_name
+                + ", date_of_birth=" + date_of_birth + ", nationality=" + nationality + ", nin=" + nin
+                + ", last_login_date=" + last_login_date + ", email=" + email + ", phone_number=" + phone_number
+                + ", address=" + address + ", city=" + city + ", state=" + state + ", postal_code=" + postal_code
+                + ", country_of_residence=" + country_of_residence + ", password=" + password + ", accounts=" + accounts
+                + ", loans=" + loans + "]";
     }
 }

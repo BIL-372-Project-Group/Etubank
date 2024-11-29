@@ -1,6 +1,6 @@
 package guis;
 
-import db_sys.User;
+import dataAccess.customer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +12,7 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
     private JTextField currentBalanceField;
     public JTextField getCurrentBalanceField() { return currentBalanceField;}
 
-    public BankingAppGui(User user) {
+    public BankingAppGui(customer user) {
         super("Banking App", user);
     }
     @Override
@@ -21,7 +21,7 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
 
         String welcomeString = "<html>" +
                 "<body style = 'text-align:center'>" +
-                "<b>Hello " + user.getUsername() + "</b><br>" +
+                "<b>Hello " + user.first_name + "</b><br>" +
                 "What would you like to do today?</body></html>";
 
         JLabel welcomeMessageLabel =  new JLabel(welcomeString);
@@ -39,7 +39,7 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
         add(currentBalanceLabel);
 
         //create current balance field
-        currentBalanceField =  new JTextField("$" + user.getCurrentBalance());
+        currentBalanceField =  new JTextField("$" + 0);
         currentBalanceField.setBounds(15,120,getWidth() -50,40);
         currentBalanceField.setFont(new Font("Dialog", Font.BOLD,16));
         currentBalanceField.setHorizontalAlignment(SwingConstants.RIGHT);

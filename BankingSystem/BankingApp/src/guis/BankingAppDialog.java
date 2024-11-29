@@ -1,12 +1,9 @@
 package guis;
 
-import db_sys.User;
+import dataAccess.customer;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-
-import MyJDBC;
-import dal.transaction;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,15 +13,14 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class BankingAppDialog extends JDialog implements ActionListener {
-    private User user;
+    private customer user;
     private BankingAppGui bankingAppGui;
     private JLabel balanceLabel,enterAmountLabel, enterUserLabel;
     private JTextField enterAmountField, enterUserField;
     private JButton actionButton;
     private JPanel pastTransactionPanel;
-    private ArrayList<transaction> pastTransactions;
 
-    public BankingAppDialog( BankingAppGui bankingAppGui,User user) {
+    public BankingAppDialog( BankingAppGui bankingAppGui,customer user) {
 
         setSize(400,400);
 
@@ -47,7 +43,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
     }
 
     public void addCurrentBalanceAndAmount(){
-        balanceLabel =  new JLabel("Balance: $" + user.getCurrentBalance());
+        balanceLabel =  new JLabel("Balance: $" + 0);
         balanceLabel.setBounds(0,10,getWidth()-20,20);
         balanceLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
         balanceLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -105,65 +101,11 @@ public class BankingAppDialog extends JDialog implements ActionListener {
 
         scrollPane.setBounds(0,20,getWidth()-15,getHeight()-20);
 
-        //perform db call to retrive all of the past transaction and store into array list
-        pastTransactions = MyJDBC.getPastTransactions(user);
-
-        //iterate thoroughout the list and add to the  gui
-        for(int i = 0;i<pastTransactions.size();i++){
-            transaction pastTransaction = pastTransactions.get(i);
-
-            //add it to the gui
-            JPanel pastTransactionContainer = new JPanel();
-            pastTransactionContainer.setLayout(new BorderLayout());
-
-            JLabel transactionTypeLabel = new JLabel(pastTransaction.getTRANSACTION_TYPE());
-            transactionTypeLabel.setFont(new Font("Dialog", Font.BOLD, 20));
-
-
-            JLabel transactionAmountLabel =  new JLabel(String.valueOf(pastTransaction.getTRANSACTION_AMOUNT()));
-            transactionAmountLabel.setFont(new Font("Dialog", Font.BOLD, 20));
-
-            JLabel transactionDateLabel =  new JLabel(pastTransaction.getTRANSACTION_DATE().toString());
-            transactionDateLabel.setFont(new Font("Dialog", Font.BOLD, 20));
-
-            pastTransactionContainer.add(transactionDateLabel,BorderLayout.SOUTH);
-            pastTransactionContainer.add(transactionTypeLabel,BorderLayout.WEST);
-            pastTransactionContainer.add(transactionAmountLabel,BorderLayout.EAST);
-
-            pastTransactionContainer.setBackground(Color.WHITE);
-
-            pastTransactionContainer.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            pastTransactionPanel.add(pastTransactionContainer);
-        }
-
         add(scrollPane);
     }
 
     private void handleTransaction(String transactionType,float amountVal) {
-        transaction transaction;
 
-        if(transactionType.equalsIgnoreCase("Deposit")) {
-            user.setCurrentBalance(user.getCurrentBalance().add(new BigDecimal(amountVal)));
-
-            //create transaction
-            transaction = new transaction(user.getId(),transactionType,new BigDecimal(amountVal),null);
-        }else{
-            //withdraw transaction type
-            user.setCurrentBalance(user.getCurrentBalance().subtract(new BigDecimal(amountVal)));
-            //create transaction
-            transaction = new transaction(user.getId(),transactionType, BigDecimal.valueOf(-amountVal),null);
-        }
-
-        //update Database
-        if(MyJDBC.addTransactionToDatabase(transaction) && MyJDBC.updateCurrentBalance(user)) {
-            JOptionPane.showMessageDialog(this, transactionType + " Successfully!");
-
-            //reset the fields
-            resetFieldsAndUpdateCurrentBalance();
-        } else{
-            //show failure dialogs
-            JOptionPane.showMessageDialog(this,transactionType + "Failed :(");
-        }
     }
 
     private void resetFieldsAndUpdateCurrentBalance() {
@@ -174,20 +116,14 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         }
 
         //update current balance on dialog
-        balanceLabel.setText("Balance: $" + user.getCurrentBalance());
+        balanceLabel.setText("Balance: $" + 0);
 
         //update current balance on main gui
-        bankingAppGui.getCurrentBalanceField().setText("$" + user.getCurrentBalance());
+        bankingAppGui.getCurrentBalanceField().setText("$" + 0);
     }
 
-    private void handleTransfer(User user, String transferredUser, float amount){
-        //attempt to perform transfer
-        if(MyJDBC.transfer(user,transferredUser,amount)) {
-            JOptionPane.showMessageDialog(this,"Transfer Successfully!");
-            resetFieldsAndUpdateCurrentBalance();
-        }else{
-            JOptionPane.showMessageDialog(this,"Transfer Failed");
-        }
+    private void handleTransfer(customer user, String transferredUser, float amount){
+
     }
 
     @Override
@@ -206,7 +142,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
             //validate input by making sure that withdraw or transfer amount is less than current balance
             //if result is -1 it means that the entered amount is more, 0 means they are equal, and 1 means that
             //the entered amount is less
-            int result = user.getCurrentBalance().compareTo(BigDecimal.valueOf(amountVal));
+            int result = 1;
             if(result < 0) {
                 JOptionPane.showMessageDialog(this, buttonpressed + " Error:Input value is more than current balance.");
             }else {

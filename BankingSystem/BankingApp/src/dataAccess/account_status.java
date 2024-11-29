@@ -6,15 +6,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class account_status {
-    int account_status_id; // Primary Key
-    String type_name; // Status type (e.g., Active, Closed)
-    String description; // Detailed description (Optional)
+    public int account_status_id; // Primary Key
+    public String type_name; // Status type (e.g., Active, Closed)
+    public String description; // Detailed description (Optional)
+    
+    public account_status(int account_status_id, String type_name, String description) {
+        this.account_status_id = account_status_id;
+        this.type_name = type_name;
+        this.description = description;
+    }
 
-public static account_status getByID(Connection connection, int id) {
-        customer instance = null;
-        String query = "SELECT first_name, last_name, date_of_birth, nationality, nin, " +
-                "last_login_date, email, phone_number, address, city, state, " +
-                "postal_code, country_of_residence, password FROM customer WHERE customer_id = ?";
+    public static account_status getByID(Connection connection, int id) {
+        account_status instance = null;
+        String query = "SELECT * FROM account_status WHERE account_status_id = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             
@@ -25,24 +29,10 @@ public static account_status getByID(Connection connection, int id) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     // Map the result set to a User object
-                    instance = new customer(
+                    instance = new account_status(
                             id,
-                            resultSet.getString("first_name"),
-                            resultSet.getString("last_name"),
-                            resultSet.getDate("date_of_birth"),
-                            resultSet.getString("nationality"),
-                            resultSet.getString("nin"),
-                            resultSet.getDate("last_login_date"),
-                            resultSet.getString("email"),
-                            resultSet.getString("phone_number"),
-                            resultSet.getString("address"),
-                            resultSet.getString("city"),
-                            resultSet.getString("state"),
-                            resultSet.getString("postal_code"),
-                            resultSet.getString("country_of_residence"),
-                            resultSet.getString("password"),
-                            null,
-                            null
+                            resultSet.getString("type_name"),
+                            resultSet.getString("description")
                     );
                 }
             }
@@ -50,5 +40,11 @@ public static account_status getByID(Connection connection, int id) {
             e.printStackTrace(); // Handle SQL exceptions
         }
         return instance;
+    }
+
+    @Override
+    public String toString() {
+        return "account_status [account_status_id=" + account_status_id + ", type_name=" + type_name + ", description="
+                + description + "]";
     }
 }

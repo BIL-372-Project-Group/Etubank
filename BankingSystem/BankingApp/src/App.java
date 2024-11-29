@@ -1,7 +1,7 @@
 import dataAccess.customer;
 import guis.BankingAppGui;
 import guis.LoginGui;
-import guis.RegisterGui;
+//import guis.RegisterGui;
 
 import javax.swing.*;
 import java.math.BigDecimal;
@@ -11,7 +11,7 @@ public class App {
         SwingUtilities.invokeLater(() -> {
            new LoginGui().setVisible(true);
            //new RegisterGui().setVisible(true);
-           //new BankingAppGui(new User(1,"username","password",new BigDecimal("20.00"))
+           //new BankingAppGui(new User(1,"email","password",new BigDecimal("20.00"))
            //).setVisible(true);
         });
     }

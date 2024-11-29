@@ -1,10 +1,9 @@
 package guis;
 
-import db_sys.User;
-
 import javax.swing.*;
 
-import MyJDBC;
+import dataAccess.DataAccessLayer;
+import dataAccess.customer;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -32,21 +31,21 @@ public class LoginGui extends BaseFrame{
         add(bankingAppLabel);
 
 
-        //username label
-        JLabel usernameLabel = new JLabel("Username:");
+        //email label
+        JLabel emailLabel = new JLabel("Email:");
 
-        usernameLabel.setBounds(20,120,getWidth()-30,24);
+        emailLabel.setBounds(20,120,getWidth()-30,24);
 
-        usernameLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
-        add(usernameLabel);
+        emailLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
+        add(emailLabel);
 
 
-        //create username field
+        //create email field
 
-        JTextField usernameField = new JTextField();
-        usernameField.setBounds(20,160,getWidth()-50,40);
-        usernameField.setFont(new Font("Dialog", Font.PLAIN, 28));
-        add(usernameField);
+        JTextField emailField = new JTextField();
+        emailField.setBounds(20,160,getWidth()-50,40);
+        emailField.setFont(new Font("Dialog", Font.PLAIN, 28));
+        add(emailField);
 
         //create password label
         JLabel passwordLabel = new JLabel("Password:");
@@ -69,11 +68,11 @@ public class LoginGui extends BaseFrame{
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
+                String email = emailField.getText();
 
                 String password = String.valueOf(passwordField.getPassword());
 
-                User user = MyJDBC.validateLogin(username, password);
+                customer user = DataAccessLayer.createSession(email, password);
 
                 if(user != null) {
                     LoginGui.this.dispose();
@@ -83,7 +82,7 @@ public class LoginGui extends BaseFrame{
 
                     JOptionPane.showMessageDialog(bankingAppGui, "Login Successful");
                 } else {
-                    JOptionPane.showMessageDialog(LoginGui.this, "Invalid Username or Password");
+                    JOptionPane.showMessageDialog(LoginGui.this, "Invalid email or Password");
                 }
             }
         });
@@ -100,7 +99,7 @@ public class LoginGui extends BaseFrame{
             public void mouseClicked(MouseEvent e) {
                 LoginGui.this.dispose();
 
-                new RegisterGui().setVisible(true);
+                //new RegisterGui().setVisible(true);
             }
         });
         add(registerLabel);
