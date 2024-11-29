@@ -10,7 +10,7 @@ def connect_to_database():
         password="",  # MySQL şifrenizi yazın
         database="BankApp"
     )
-    def add_account(self, customer_id, iban, account_number, account_status_id, account_type_id, date_opened, balance, currency, bank_id):
+def add_account(self, customer_id, iban, account_number, account_status_id, account_type_id, date_opened, balance, currency, bank_id):
         """Yeni bir hesap ekler."""
         try:
             connection = self.connect_to_database()  # Bağlantıyı kur
@@ -30,7 +30,7 @@ def connect_to_database():
             cursor.close()
             connection.close()
 
-    def delete_account(self, account_id):
+def delete_account(self, account_id):
         """Bir hesabı siler."""
         try:
             connection = self.connect_to_database()  # Bağlantıyı kur
@@ -49,7 +49,7 @@ def connect_to_database():
             cursor.close()
             connection.close()
 
-    def add_account_button_click(self):
+def add_account_button_click(self):
         """GUI'den hesap eklemek için buton tıklama fonksiyonu."""
         customer_id = 1
         iban = "TR123456789012345678901234"
@@ -65,7 +65,7 @@ def connect_to_database():
         self.add_account(customer_id, iban, account_number, account_status_id, account_type_id, date_opened, balance, currency, bank_id)
         messagebox.showinfo("Başarılı", "Hesap başarıyla eklendi!")
 
-    def delete_account_button_click(self):
+def delete_account_button_click(self):
         """GUI'den hesap silmek için buton tıklama fonksiyonu."""
         account_id = 1  # Silinecek hesap ID'si
         self.delete_account(account_id)
