@@ -1,9 +1,11 @@
 package guis;
 
-import db_sys.MyJDBC;
 import db_sys.User;
 
 import javax.swing.*;
+
+import MyJDBC;
+
 import java.awt.*;
 import java.awt.event.*;
 

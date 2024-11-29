@@ -1,7 +1,8 @@
 package guis;
 
 import com.mysql.cj.log.Log;
-import db_sys.MyJDBC;
+
+import MyJDBC;
 
 import javax.swing.*;
 import java.awt.*;

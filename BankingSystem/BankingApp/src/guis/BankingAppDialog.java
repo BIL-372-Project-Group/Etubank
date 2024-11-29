@@ -1,11 +1,13 @@
 package guis;
 
-import db_sys.MyJDBC;
-import db_sys.Transaction;
 import db_sys.User;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+
+import MyJDBC;
+import dal.transaction;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +22,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
     private JTextField enterAmountField, enterUserField;
     private JButton actionButton;
     private JPanel pastTransactionPanel;
-    private ArrayList<Transaction> pastTransactions;
+    private ArrayList<transaction> pastTransactions;
 
     public BankingAppDialog( BankingAppGui bankingAppGui,User user) {
 
@@ -108,7 +110,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
 
         //iterate thoroughout the list and add to the  gui
         for(int i = 0;i<pastTransactions.size();i++){
-            Transaction pastTransaction = pastTransactions.get(i);
+            transaction pastTransaction = pastTransactions.get(i);
 
             //add it to the gui
             JPanel pastTransactionContainer = new JPanel();
@@ -138,18 +140,18 @@ public class BankingAppDialog extends JDialog implements ActionListener {
     }
 
     private void handleTransaction(String transactionType,float amountVal) {
-        Transaction transaction;
+        transaction transaction;
 
         if(transactionType.equalsIgnoreCase("Deposit")) {
             user.setCurrentBalance(user.getCurrentBalance().add(new BigDecimal(amountVal)));
 
             //create transaction
-            transaction = new Transaction(user.getId(),transactionType,new BigDecimal(amountVal),null);
+            transaction = new transaction(user.getId(),transactionType,new BigDecimal(amountVal),null);
         }else{
             //withdraw transaction type
             user.setCurrentBalance(user.getCurrentBalance().subtract(new BigDecimal(amountVal)));
             //create transaction
-            transaction = new Transaction(user.getId(),transactionType, BigDecimal.valueOf(-amountVal),null);
+            transaction = new transaction(user.getId(),transactionType, BigDecimal.valueOf(-amountVal),null);
         }
 
         //update Database
