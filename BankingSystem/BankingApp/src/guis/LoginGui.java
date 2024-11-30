@@ -9,6 +9,9 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class LoginGui extends BaseFrame{
+    private JTextField emailField;
+    private JPasswordField passwordField;
+    private JButton loginButton;
 
     public LoginGui() {
         super("Banking Application");
@@ -42,7 +45,7 @@ public class LoginGui extends BaseFrame{
 
         //create email field
 
-        JTextField emailField = new JTextField();
+        emailField = new JTextField();
         emailField.setBounds(20,160,getWidth()-50,40);
         emailField.setFont(new Font("Dialog", Font.PLAIN, 28));
         add(emailField);
@@ -55,13 +58,13 @@ public class LoginGui extends BaseFrame{
         add(passwordLabel);
 
         //create password Field
-        JPasswordField passwordField = new JPasswordField();
+        passwordField = new JPasswordField();
         passwordField.setBounds(20,270,getWidth()-50,40);
         passwordField.setFont(new Font("Dialog", Font.PLAIN, 28));
         add(passwordField);
 
         //create login button
-        JButton loginButton = new JButton("Login");
+        loginButton = new JButton("Login");
         loginButton.setBounds(20,460,getWidth()-50,40);
         passwordField.setFont(new Font("Dialog", Font.BOLD, 20));
         loginButton.addActionListener(new ActionListener() {
@@ -77,10 +80,9 @@ public class LoginGui extends BaseFrame{
                 if(user != null) {
                     LoginGui.this.dispose();
 
-                    BankingAppGui bankingAppGui = new BankingAppGui(user);
-                    bankingAppGui.setVisible(true);
+                    new AccountSelectionGui(user).setVisible(true);
 
-                    JOptionPane.showMessageDialog(bankingAppGui, "Login Successful");
+                    JOptionPane.showMessageDialog(null, "Login Successful");
                 } else {
                     JOptionPane.showMessageDialog(LoginGui.this, "Invalid email or Password");
                 }

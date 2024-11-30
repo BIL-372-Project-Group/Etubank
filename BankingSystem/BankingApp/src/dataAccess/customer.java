@@ -59,8 +59,9 @@ public class customer {
         customer instance = null;
         String query = "SELECT * FROM customer WHERE customer_id = ?";
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            
+        try  {
+            connection = DriverManager.getConnection(DataAccessLayer.DB_URL, DataAccessLayer.DB_USERNAME, DataAccessLayer.DB_PASSWORD);
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
             // Set the parameter for userId
             preparedStatement.setInt(1, id);
 
@@ -103,4 +104,19 @@ public class customer {
                 + ", country_of_residence=" + country_of_residence + ", password=" + password + ", accounts=" + accounts
                 + ", loans=" + loans + "]";
     }
+
+    //getter of account
+    public ArrayList<account> getAccounts() {
+        return accounts;
+    }
+
+    public BigDecimal getBalance(){
+        BigDecimal balance = new BigDecimal(0);
+        for(account acc: accounts){
+            balance = balance.add(acc.getBalance());
+        }
+        return balance.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    
 }

@@ -1,6 +1,7 @@
 package dataAccess;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +21,9 @@ public class account_status {
         account_status instance = null;
         String query = "SELECT * FROM account_status WHERE account_status_id = ?";
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try  {
+            connection = DriverManager.getConnection(DataAccessLayer.DB_URL, DataAccessLayer.DB_USERNAME, DataAccessLayer.DB_PASSWORD);
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
             
             // Set the parameter for userId
             preparedStatement.setInt(1, id);

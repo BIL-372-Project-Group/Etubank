@@ -1,27 +1,28 @@
 package guis;
 
+import dataAccess.DataAccessLayer;
+import dataAccess.account;
 import dataAccess.customer;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Vector;
 
 public class BankingAppDialog extends JDialog implements ActionListener {
     private customer user;
+    private account selectedAccount;
     private BankingAppGui bankingAppGui;
-    private JLabel balanceLabel,enterAmountLabel, enterUserLabel;
+    private JLabel balanceLabel, enterAmountLabel, enterUserLabel;
     private JTextField enterAmountField, enterUserField;
     private JButton actionButton;
     private JPanel pastTransactionPanel;
 
-    public BankingAppDialog( BankingAppGui bankingAppGui,customer user) {
-
+    public BankingAppDialog(BankingAppGui bankingAppGui, customer user, account selectedAccount) {
+        this.bankingAppGui = bankingAppGui;
+        this.user = user;
+        this.selectedAccount = selectedAccount;
         setSize(400,400);
 
         //addingFocus  to the dialog. Cannot interact with anything until the dialog is closed.
@@ -34,16 +35,10 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         setResizable(false);
 
         setLayout(null);
-
-        this.bankingAppGui = bankingAppGui;
-
-        this.user = user;
-
-
     }
 
-    public void addCurrentBalanceAndAmount(){
-        balanceLabel =  new JLabel("Balance: $" + 0);
+    public void addCurrentBalanceAndAmount() {
+        balanceLabel = new JLabel("Balance: $" + selectedAccount.getBalance());
         balanceLabel.setBounds(0,10,getWidth()-20,20);
         balanceLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
         balanceLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -63,7 +58,6 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         add(enterAmountField);
 
     }
-
 
     public void addActionButton(String actionButtonType){
         actionButton = new JButton(actionButtonType);
@@ -104,59 +98,45 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         add(scrollPane);
     }
 
-    private void handleTransaction(String transactionType,float amountVal) {
+    private void handleTransaction(String transactionType, float amountVal) {
+        BigDecimal amount = BigDecimal.valueOf(amountVal);
+        selectedAccount.handleTransaction(transactionType, amount);
+        resetFieldsAndUpdateCurrentBalance();
+    }
 
+    private void handleTransfer(String transferredUserIBAN, float amount) {
+        account recipientAccount = DataAccessLayer.getAccountByIBAN(transferredUserIBAN);
+        if (recipientAccount == null) {
+            JOptionPane.showMessageDialog(this, "Transfer Error: User not found.");
+            return;
+        }
+        BigDecimal amountBD = BigDecimal.valueOf(amount);
+        try {
+            selectedAccount.handleTransfer(recipientAccount, amountBD);
+            resetFieldsAndUpdateCurrentBalance();
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
     }
 
     private void resetFieldsAndUpdateCurrentBalance() {
         enterAmountField.setText("");
-
-        if(enterUserField != null) {
+        if (enterUserField != null) {
             enterUserField.setText("");
         }
-
-        //update current balance on dialog
-        balanceLabel.setText("Balance: $" + 0);
-
-        //update current balance on main gui
-        bankingAppGui.getCurrentBalanceField().setText("$" + 0);
-    }
-
-    private void handleTransfer(customer user, String transferredUser, float amount){
-
+        balanceLabel.setText("Balance: $" + selectedAccount.getBalance());
+        bankingAppGui.getCurrentBalanceField().setText("$" + selectedAccount.getBalance());
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String buttonpressed = e.getActionCommand();
-
-        //get amount val
+        String buttonPressed = e.getActionCommand();
         float amountVal = Float.parseFloat(enterAmountField.getText());
-
-        //pressed deposit
-        if(buttonpressed.equalsIgnoreCase("Deposit")){
-            handleTransaction(buttonpressed,amountVal);
-        }else{
-            //pressed withdraw or transfer
-
-            //validate input by making sure that withdraw or transfer amount is less than current balance
-            //if result is -1 it means that the entered amount is more, 0 means they are equal, and 1 means that
-            //the entered amount is less
-            int result = 1;
-            if(result < 0) {
-                JOptionPane.showMessageDialog(this, buttonpressed + " Error:Input value is more than current balance.");
-            }else {
-
-                if (buttonpressed.equalsIgnoreCase("Withdraw")) {
-                    handleTransaction(buttonpressed, amountVal);
-                } else {
-
-                    String transferedUser = enterUserField.getText();
-
-                    //handle transfer
-                    handleTransfer(user, transferedUser, amountVal);
-                }
-            }
+        if (buttonPressed.equalsIgnoreCase("Deposit") || buttonPressed.equalsIgnoreCase("Withdraw")) {
+            handleTransaction(buttonPressed, amountVal);
+        } else if (buttonPressed.equalsIgnoreCase("Transfer")) {
+            String transferredUser = enterUserField.getText();
+            handleTransfer(transferredUser, amountVal);
         }
     }
 }

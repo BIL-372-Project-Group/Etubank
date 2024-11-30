@@ -1,5 +1,6 @@
 package guis;
 
+import dataAccess.account;
 import dataAccess.customer;
 
 import javax.swing.*;
@@ -8,13 +9,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class BankingAppGui extends BaseFrame implements ActionListener {
-
+    private account selectedAccount;
     private JTextField currentBalanceField;
     public JTextField getCurrentBalanceField() { return currentBalanceField;}
 
-    public BankingAppGui(customer user) {
+    public BankingAppGui(customer user, account selectedAccount) {
         super("Banking App", user);
+        this.selectedAccount = selectedAccount;
+        addGuiComponents();
     }
+
     @Override
     protected void addGuiComponents() {
         //create welcome message
@@ -39,11 +43,12 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
         add(currentBalanceLabel);
 
         //create current balance field
-        currentBalanceField =  new JTextField("$" + 0);
+        currentBalanceField = new JTextField("$" + selectedAccount.getBalance().toString());
         currentBalanceField.setBounds(15,120,getWidth() -50,40);
         currentBalanceField.setFont(new Font("Dialog", Font.BOLD,16));
         currentBalanceField.setHorizontalAlignment(SwingConstants.RIGHT);
         currentBalanceField.setEditable(false);
+        
         add(currentBalanceField);
 
         //deposit button
@@ -102,7 +107,7 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
             return;
         }
 
-        BankingAppDialog bankingAppDialog =  new BankingAppDialog(this,user);
+        BankingAppDialog bankingAppDialog =  new BankingAppDialog(this, user, selectedAccount);
 
         bankingAppDialog.setTitle(buttonPressed);
 
