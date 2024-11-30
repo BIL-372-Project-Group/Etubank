@@ -23,25 +23,24 @@ public class loan_type {
                 + "]";
     }
 
-    public static loan_type getByLoanID(Connection connection, int lid) {
+    public static loan_type getByID(Connection connection, int id) {
 
         loan_type instance = null;
 
-        String query = "SELECT * FROM loan_type WHERE loan_id = ?";
+        String query = "SELECT * FROM loan_type WHERE loan_type_id = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             // Set the parameter for userId
-            preparedStatement.setInt(1, lid);
+            preparedStatement.setInt(1, id);
 
             // Execute the query
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    // Map the result set to a User object
-                    int id = resultSet.getInt("loan_type_id");
+                    // Map the result set
                     instance = new loan_type(
                             id,
-                            resultSet.getString("name"),
+                            resultSet.getString("type_name"),
                             resultSet.getString("description"));
                 }
             }

@@ -57,7 +57,7 @@ public class transaction_history {
                         resultSet.getInt("transaction_id"),
                         resultSet.getDate("transaction_date"),
                         resultSet.getBigDecimal("balance_after_transaction"),
-                        transaction.getbyHistoryID(connection, id)
+                        transaction.getByID(connection, resultSet.getInt("transaction_id"))
                         )
                     );
                 }

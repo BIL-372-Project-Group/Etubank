@@ -20,14 +20,14 @@ public class account {
     public BigDecimal balance; // Current account balance
     public String currency; // Currency type (e.g., USD, EUR)
 
-    public transaction_history transactionHistory;
+    public ArrayList<transaction_history> transactionHistory;
     public ArrayList<card> cards;
     public account_status status;
     public account_type type;
 
     public account(int account_id, int customer_id, String iban, String account_number, int account_status_id,
             int account_type_id, Date date_opened, Date last_activity_date, BigDecimal balance, String currency,
-            transaction_history transactionHistory, ArrayList<card> cards, account_status status, account_type type) {
+            ArrayList<transaction_history> transactionHistory, ArrayList<card> cards, account_status status, account_type type) {
         this.account_id = account_id;
         this.customer_id = customer_id;
         this.iban = iban;
@@ -42,40 +42,6 @@ public class account {
         this.cards = cards;
         this.status = status;
         this.type = type;
-    }
-
-    public static account getByID(Connection connection, int id) {
-        account instance = null;
-        String query = "SELECT * FROM account WHERE account_id = ?";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
-            // Set the parameter for userId
-            preparedStatement.setInt(1, id);
-
-            // Execute the query
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    // Map the result set to a User object
-                    instance = new account(
-                            id,
-                            resultSet.getInt("customer_id"),
-                            resultSet.getString("iban"),
-                            resultSet.getString("account_number"),
-                            resultSet.getInt("account_status_id"),
-                            resultSet.getInt("account_type_id"),
-                            resultSet.getDate("date_opened"),
-                            resultSet.getDate("last_activity_date"),
-                            resultSet.getBigDecimal("balance"),
-                            resultSet.getString("currency"),
-                            transaction_history.getByAccountID(connection, id),
-                            card.getByAccountID(connection, id), account_status.getByAccountID(connection,id), account_type.getByAccountID(connection, id));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Handle SQL exceptions
-        }
-        return instance;
     }
 
     public static ArrayList<account> getByCustomerID(Connection connection, int cid) {
@@ -93,7 +59,25 @@ public class account {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     // Map the result set to a User object
-                    list.add(account.getByID(connection, resultSet.getInt("account_id")));
+                    int id = resultSet.getInt("account_id");
+                    list.add(
+                        new account(
+                            id,
+                            resultSet.getInt("customer_id"),
+                            resultSet.getString("iban"),
+                            resultSet.getString("account_number"),
+                            resultSet.getInt("account_status_id"),
+                            resultSet.getInt("account_type_id"),
+                            resultSet.getDate("date_opened"),
+                            resultSet.getDate("last_activity_date"),
+                            resultSet.getBigDecimal("balance"),
+                            resultSet.getString("currency"),
+                            transaction_history.getByAccountID(connection, id),
+                            card.getByAccountID(connection, id),
+                            account_status.getByID(connection,id),
+                            account_type.getByID(connection, id)
+                            )
+                    );
                 }
             }
         } catch (SQLException e) {

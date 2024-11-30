@@ -19,11 +19,11 @@ public class loan {
 
     public loan_type type;
     public loan_status status;
-    public loan_payment_schedule paymentSchedule;
+    public ArrayList<loan_payment_schedule> paymentSchedule;
     
     public loan(int loan_id, int loan_type_id, int customer_id, int principal_amount, double interest_rate,
             int loan_status_id, Date start_date, Date end_date, loan_type type, loan_status status,
-            loan_payment_schedule paymentSchedule) {
+            ArrayList<loan_payment_schedule> paymentSchedule) {
         this.loan_id = loan_id;
         this.loan_type_id = loan_type_id;
         this.customer_id = customer_id;
@@ -63,8 +63,8 @@ public class loan {
                         resultSet.getInt("loan_status_id"),
                         resultSet.getDate("start_date"),
                         resultSet.getDate("end_date"),
-                        loan_type.getByLoanID(connection, id),
-                        loan_status.getByLoanID(connection,id),
+                        loan_type.getByID(connection, resultSet.getInt("loan_type_id")),
+                        loan_status.getByID(connection, resultSet.getInt("loan_status_id")),
                         loan_payment_schedule.getByLoanID(connection,id)
                         )
                     );

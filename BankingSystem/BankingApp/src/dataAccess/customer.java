@@ -67,8 +67,6 @@ public class customer {
             // Execute the query
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                        ArrayList<account> accounts = account.getByCustomerID(connection, id);
-                        ArrayList<loan> loans = null;//loan.getByCustomerID(connection, id);
                     instance = new customer(
                             id,
                             resultSet.getString("first_name"),
@@ -85,8 +83,8 @@ public class customer {
                             resultSet.getString("postal_code"),
                             resultSet.getString("country_of_residence"),
                             resultSet.getString("password"),
-                            accounts,
-                            loans
+                            account.getByCustomerID(connection, id),
+                            loan.getByCustomerID(connection, id)
                     );
                 }
             }

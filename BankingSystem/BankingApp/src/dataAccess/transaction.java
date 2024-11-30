@@ -6,6 +6,9 @@ import java.sql.Connection;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class transaction {
     public int transaction_id;
@@ -30,5 +33,36 @@ public class transaction {
         return "transaction [transaction_id=" + transaction_id + ", transaction_type_id=" + transaction_type_id
                 + ", sender_id=" + sender_id + ", recipient_id=" + recipient_id + ", amount=" + amount
                 + ", transaction_date=" + transaction_date + "]";
+    }
+
+    public static transaction getByID(Connection connection, int id) {
+
+        transaction instance = null;
+
+        String query = "SELECT * FROM transaction WHERE transaction_id = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            // Set the parameter for userId
+            preparedStatement.setInt(1, id);
+
+            // Execute the query
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    // Map the result set to a User object
+                    instance = new transaction(
+                            id,
+                            resultSet.getInt("transaction_type_id"),
+                            resultSet.getInt("sender_id"),
+                            resultSet.getInt("recipient_id"),
+                            resultSet.getBigDecimal("amount"),
+                            resultSet.getDate("transaction_date")
+                            );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle SQL exceptions
+        }
+        return instance;
     }
 }
