@@ -1,7 +1,6 @@
 package dataAccess;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,9 +20,8 @@ public class card_type {
         card_type instance = null;
         String query = "SELECT * FROM card_type WHERE card_type_id = ?";
 
-        try  {
-            connection = DriverManager.getConnection(DataAccessLayer.DB_URL, DataAccessLayer.DB_USERNAME, DataAccessLayer.DB_PASSWORD);
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            
             // Set the parameter for userId
             preparedStatement.setInt(1, id);
 

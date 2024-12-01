@@ -13,7 +13,7 @@ public class DataAccessLayer {
     //db configuration
     public static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/etubank";
     public static final String DB_USERNAME = "root";
-    public static final String DB_PASSWORD = "8%g4J0Q=r/Yg2X80{!z>";
+    public static final String DB_PASSWORD = "abc123";
 
 
     public static customer createSession(String email, String password) {

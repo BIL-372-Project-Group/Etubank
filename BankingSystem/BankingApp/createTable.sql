@@ -1,3 +1,19 @@
+DROP TABLE IF EXISTS loan_payment;
+DROP TABLE IF EXISTS loan_payment_schedule;
+DROP TABLE IF EXISTS loan;
+DROP TABLE IF EXISTS loan_type;
+DROP TABLE IF EXISTS loan_status;
+DROP TABLE IF EXISTS transaction_history;
+DROP TABLE IF EXISTS transaction;
+DROP TABLE IF EXISTS transaction_type;
+DROP TABLE IF EXISTS card;
+DROP TABLE IF EXISTS card_type;
+DROP TABLE IF EXISTS account;
+DROP TABLE IF EXISTS account_type;
+DROP TABLE IF EXISTS account_status;
+DROP TABLE IF EXISTS customer;
+DROP TABLE IF EXISTS bank;
+
 -- Table for banks
 CREATE TABLE bank (
     bank_id INT PRIMARY KEY,

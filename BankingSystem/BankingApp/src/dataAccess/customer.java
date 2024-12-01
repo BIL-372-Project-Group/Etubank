@@ -1,5 +1,7 @@
 package dataAccess;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -54,9 +56,8 @@ public class customer {
         customer instance = null;
         String query = "SELECT * FROM customer WHERE customer_id = ?";
 
-        try  {
-            connection = DriverManager.getConnection(DataAccessLayer.DB_URL, DataAccessLayer.DB_USERNAME, DataAccessLayer.DB_PASSWORD);
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
             // Set the parameter for userId
             preparedStatement.setInt(1, id);
 
@@ -80,8 +81,7 @@ public class customer {
                             resultSet.getString("country_of_residence"),
                             resultSet.getString("password"),
                             account.getByCustomerID(connection, id),
-                            loan.getByCustomerID(connection, id)
-                    );
+                            loan.getByCustomerID(connection, id));
                 }
             }
         } catch (SQLException e) {
@@ -100,27 +100,26 @@ public class customer {
                 + ", loans=" + loans + "]";
     }
 
-    //getter of account
+    // getter of account
     public ArrayList<account> getAccounts() {
         return accounts;
     }
 
-    //getter of account array
+    // getter of account array
     public account[] getAccountArray() {
         account[] accountArray = new account[accounts.size()];
         for (int i = 0; i < accounts.size(); i++) {
             accountArray[i] = accounts.get(i);
-        }   
+        }
         return accountArray;
     }
 
-    public BigDecimal getBalance(){
+    public BigDecimal getBalance() {
         BigDecimal balance = new BigDecimal(0);
-        for(account acc: accounts){
+        for (account acc : accounts) {
             balance = balance.add(acc.getBalance());
         }
         return balance.setScale(2, RoundingMode.HALF_UP);
     }
 
-    
 }

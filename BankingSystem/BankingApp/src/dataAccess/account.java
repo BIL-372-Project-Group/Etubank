@@ -51,9 +51,7 @@ public class account {
 
         String query = "SELECT * FROM account WHERE customer_id = ?";
 
-        try  {
-            connection = DriverManager.getConnection(DataAccessLayer.DB_URL, DataAccessLayer.DB_USERNAME, DataAccessLayer.DB_PASSWORD);
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             // Set the parameter for userId
             preparedStatement.setInt(1, cid);
