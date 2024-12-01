@@ -171,3 +171,47 @@ CREATE TABLE loan_payment (
     FOREIGN KEY (schedule_id) REFERENCES loan_payment_schedule(schedule_id),
     FOREIGN KEY (bank_id) REFERENCES bank(bank_id)
 );
+
+-- Indexes for bank table
+CREATE INDEX idx_bank_id ON bank (bank_id);
+
+-- Indexes for customer table
+CREATE INDEX idx_customer_id ON customer (customer_id);
+CREATE INDEX idx_customer_bank_id ON customer (bank_id);
+CREATE INDEX idx_customer_email ON customer (email);
+
+-- Indexes for account table
+CREATE INDEX idx_account_id ON account (account_id);
+CREATE INDEX idx_account_customer_id ON account (customer_id);
+CREATE INDEX idx_account_bank_id ON account (bank_id);
+CREATE INDEX idx_account_status ON account (account_status_id);
+CREATE INDEX idx_account_type ON account (account_type_id);
+
+-- Indexes for transaction table
+CREATE INDEX idx_transaction_id ON transaction (transaction_id);
+CREATE INDEX idx_transaction_sender_id ON transaction (sender_id);
+CREATE INDEX idx_transaction_recipient_id ON transaction (recipient_id);
+CREATE INDEX idx_transaction_date ON transaction (transaction_date);
+CREATE INDEX idx_transaction_type ON transaction (transaction_type_id);
+
+-- Indexes for transaction_history table
+CREATE INDEX idx_history_id ON transaction_history (history_id);
+CREATE INDEX idx_history_account_id ON transaction_history (account_id);
+CREATE INDEX idx_history_transaction_id ON transaction_history (transaction_id);
+
+-- Indexes for loan table
+CREATE INDEX idx_loan_id ON loan (loan_id);
+CREATE INDEX idx_loan_customer_id ON loan (customer_id);
+CREATE INDEX idx_loan_bank_id ON loan (bank_id);
+CREATE INDEX idx_loan_type ON loan (loan_type_id);
+CREATE INDEX idx_loan_status ON loan (loan_status_id);
+
+-- Indexes for loan_payment_schedule table
+CREATE INDEX idx_schedule_id ON loan_payment_schedule (schedule_id);
+CREATE INDEX idx_schedule_loan_id ON loan_payment_schedule (loan_id);
+CREATE INDEX idx_schedule_due_date ON loan_payment_schedule (due_date);
+
+-- Indexes for loan_payment table
+CREATE INDEX idx_payment_id ON loan_payment (payment_id);
+CREATE INDEX idx_payment_schedule_id ON loan_payment (schedule_id);
+CREATE INDEX idx_payment_date ON loan_payment (payment_date);
