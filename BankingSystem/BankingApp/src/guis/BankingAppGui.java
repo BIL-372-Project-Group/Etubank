@@ -125,13 +125,13 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
 
         //pressed take loan
         if (buttonPressed.equalsIgnoreCase("Take Loan")) {
-            TakeLoanDialog takeLoanDialog = new TakeLoanDialog(this);
+            TakeLoanDialog takeLoanDialog = new TakeLoanDialog(this, user);
             takeLoanDialog.setVisible(true);
             return;
         }
         //pressed pay loan
         if (buttonPressed.equalsIgnoreCase("Pay Loan")) {
-            PayLoanDialog payLoanDialog = new PayLoanDialog(this);
+            PayLoanDialog payLoanDialog = new PayLoanDialog(this, user);
             payLoanDialog.setVisible(true);
             return;
         }

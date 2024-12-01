@@ -12,7 +12,7 @@ public class LoginGui extends BaseFrame {
     private JButton loginButton;
 
     public LoginGui() {
-        super("Banking Application");
+        super("ETUBANK");
     }
 
     @Override
@@ -20,7 +20,7 @@ public class LoginGui extends BaseFrame {
         setLayout(null); // Use a null layout for custom positioning
 
         // Title label
-        JLabel bankingAppLabel = createLabel("Banking Application", 32, 0, 20, getWidth(), 40, SwingConstants.CENTER);
+        JLabel bankingAppLabel = createLabel("ETUBANK", 32, 0, 20, getWidth()-20, 40, SwingConstants.CENTER);
         add(bankingAppLabel);
 
         // Email label and field
@@ -86,7 +86,6 @@ public class LoginGui extends BaseFrame {
             if (user != null) {
                 dispose();
                 new AccountSelectionGui(user).setVisible(true);
-                JOptionPane.showMessageDialog(null, "Login Successful");
             } else {
                 JOptionPane.showMessageDialog(LoginGui.this, "Invalid email or password");
             }

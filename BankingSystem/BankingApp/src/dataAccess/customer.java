@@ -26,6 +26,8 @@ public class customer {
     public String country_of_residence;
     public String password;
 
+    public static Connection storedConnection;
+
     public ArrayList<account> accounts;
     public ArrayList<loan> loans;
 
@@ -53,6 +55,7 @@ public class customer {
     }
 
     public static customer getByID(Connection connection, int id) {
+        storedConnection = connection;
         customer instance = null;
         String query = "SELECT * FROM customer WHERE customer_id = ?";
 

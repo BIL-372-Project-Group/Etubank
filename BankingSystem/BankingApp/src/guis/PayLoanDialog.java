@@ -1,11 +1,17 @@
 package guis;
 
 import javax.swing.*;
+
+import dataAccess.customer;
+import dataAccess.loan;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import bll.Loan;
 
 public class PayLoanDialog extends JDialog implements ActionListener {
     private JComboBox<String> loanComboBox;
@@ -14,18 +20,21 @@ public class PayLoanDialog extends JDialog implements ActionListener {
     private JButton cancelButton;
 
     private Map<String, Loan> loans;
+    private static customer user;
 
-    public PayLoanDialog(Frame parent) {
+    public PayLoanDialog(Frame parent, customer u) {
         super(parent, "Pay Loan", true);
+        user = u;
         initializeLoans(); // Initialize with sample data
         setupUI();
     }
 
     private void initializeLoans() {
-        loans = new HashMap<>();
-        loans.put("Loan 001", new Loan("Loan 001", 5000.0, 5.0, 12));
-        loans.put("Loan 002", new Loan("Loan 002", 10000.0, 4.0, 24));
-        loans.put("Loan 003", new Loan("Loan 003", 7500.0, 6.0, 18));
+        loans = new HashMap<String, Loan>();
+        int i = 0;
+        for(loan a : user.loans){
+            loans.put("Loan: " + (i++), new Loan(a));
+        }
     }
 
     private void setupUI() {
@@ -117,51 +126,17 @@ public class PayLoanDialog extends JDialog implements ActionListener {
 
         double monthlyPayment = calculateMonthlyPayment(loan.getRemainingBalance(), loan.getInterestRate(), loan.getInstallments());
         double newBalance = loan.getRemainingBalance() - monthlyPayment;
-        loan.setRemainingBalance(newBalance);
+        //loan.setRemainingBalance(newBalance);
 
         if (newBalance <= 0) {
             JOptionPane.showMessageDialog(this, "Loan fully paid!", "Success", JOptionPane.INFORMATION_MESSAGE);
             loans.remove(selectedLoan);
             loanComboBox.removeItem(selectedLoan); // Remove fully paid loan from combo box
         } else {
+            user.accounts.get(0).balance = user.accounts.get(0).balance.subtract(BigDecimal.valueOf(monthlyPayment));
             JOptionPane.showMessageDialog(this, "Payment successful! Remaining balance: " + String.format("$%.2f", newBalance), "Success", JOptionPane.INFORMATION_MESSAGE);
         }
 
         updateMonthlyPayment(); // Update the displayed monthly payment after payment is made
-    }
-
-    // Loan class to encapsulate loan details
-    private static class Loan {
-        private String id;
-        private double remainingBalance;
-        private double interestRate; // Annual interest rate in %
-        private int installments; // Remaining installments
-
-        public Loan(String id, double remainingBalance, double interestRate, int installments) {
-            this.id = id;
-            this.remainingBalance = remainingBalance;
-            this.interestRate = interestRate;
-            this.installments = installments;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public double getRemainingBalance() {
-            return remainingBalance;
-        }
-
-        public void setRemainingBalance(double remainingBalance) {
-            this.remainingBalance = remainingBalance;
-        }
-
-        public double getInterestRate() {
-            return interestRate;
-        }
-
-        public int getInstallments() {
-            return installments;
-        }
     }
 }

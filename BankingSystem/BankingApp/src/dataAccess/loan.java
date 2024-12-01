@@ -16,6 +16,7 @@ public class loan {
     public int loan_status_id; // Foreign Key (references loan_status.loan_status_id)
     public Date start_date; // Loan start date
     public Date end_date; // Loan end date
+    public int installments = 1;
 
     public loan_type type;
     public loan_status status;
