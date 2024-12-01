@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 //interaction with MYSQL database.
 
@@ -37,7 +36,6 @@ public class DataAccessLayer {
             if(resultSet.next()){
                 int customerId = resultSet.getInt("customer_id");
                 customer temp = customer.getByID(connection, customerId);
-                System.out.println(temp);
                 return temp;
             }
 
@@ -48,5 +46,4 @@ public class DataAccessLayer {
         //not valid user
         return null;
     }
-
 }

@@ -1,7 +1,5 @@
 package dataAccess;
 
-import java.sql.Connection;
-
 public class transaction_type {
     public int transaction_type_id; // Primary Key
     public String type_name; // Name of the transaction type
