@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,7 +51,9 @@ public class account {
 
         String query = "SELECT * FROM account WHERE customer_id = ?";
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try  {
+            connection = DriverManager.getConnection(DataAccessLayer.DB_URL, DataAccessLayer.DB_USERNAME, DataAccessLayer.DB_PASSWORD);
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             // Set the parameter for userId
             preparedStatement.setInt(1, cid);
@@ -94,4 +97,44 @@ public class account {
                 + last_activity_date + ", balance=" + balance + ", currency=" + currency + ", transactionHistory="
                 + transactionHistory + ", cards=" + cards + ", status=" + status + ", type=" + type + "]";
     }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void handleTransaction(String transactionType, BigDecimal amount) {
+        if (transactionType.equalsIgnoreCase("Deposit")) {
+            balance = balance.add(amount);
+        } else if (transactionType.equalsIgnoreCase("Withdraw")) {
+            balance = balance.subtract(amount);
+        }
+        updateBalanceInDatabase();
+    }
+
+    public void handleTransfer(account recipientAccount, BigDecimal amount) {
+        if (balance.compareTo(amount) < 0) {
+            throw new IllegalArgumentException("Insufficient funds for transfer.");
+        }
+        balance = balance.subtract(amount);
+        recipientAccount.balance = recipientAccount.balance.add(amount);
+        updateBalanceInDatabase();
+        recipientAccount.updateBalanceInDatabase();
+    }
+    
+
+    private void updateBalanceInDatabase() {
+        try (Connection connection = DriverManager.getConnection(DataAccessLayer.DB_URL, DataAccessLayer.DB_USERNAME, DataAccessLayer.DB_PASSWORD)) {
+            String query = "UPDATE account SET balance = ? WHERE account_id = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setBigDecimal(1, balance);
+                preparedStatement.setInt(2, account_id);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+   
+
 }

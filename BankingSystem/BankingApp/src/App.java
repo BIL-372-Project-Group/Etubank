@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 public class App {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
+            System.out.println("calisiyor");
            new LoginGui().setVisible(true);
            //new RegisterGui().setVisible(true);
            //new BankingAppGui(new User(1,"email","password",new BigDecimal("20.00"))
