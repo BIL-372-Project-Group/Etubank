@@ -1,14 +1,12 @@
 package guis;
 
 import javax.swing.*;
-
 import dataAccess.DataAccessLayer;
 import dataAccess.customer;
-
 import java.awt.*;
 import java.awt.event.*;
 
-public class LoginGui extends BaseFrame{
+public class LoginGui extends BaseFrame {
     private JTextField emailField;
     private JPasswordField passwordField;
     private JButton loginButton;
@@ -19,95 +17,88 @@ public class LoginGui extends BaseFrame{
 
     @Override
     protected void addGuiComponents() {
-        //banking app label
-        JLabel bankingAppLabel = new JLabel("Banking Application");
+        setLayout(null); // Use a null layout for custom positioning
 
-        //setting the labels location
-        bankingAppLabel.setBounds(0,20,super.getWidth(),40);
-
-        //font changes
-        bankingAppLabel.setFont(new Font("Dialog", Font.BOLD, 32));
-
-        //center text
-        bankingAppLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
+        // Title label
+        JLabel bankingAppLabel = createLabel("Banking Application", 32, 0, 20, getWidth(), 40, SwingConstants.CENTER);
         add(bankingAppLabel);
 
-
-        //email label
-        JLabel emailLabel = new JLabel("Email:");
-
-        emailLabel.setBounds(20,120,getWidth()-30,24);
-
-        emailLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
+        // Email label and field
+        JLabel emailLabel = createLabel("Email:", 20, 20, 120, getWidth() - 30, 24, SwingConstants.LEFT);
         add(emailLabel);
-
-
-        //create email field
-
-        emailField = new JTextField();
-        emailField.setBounds(20,160,getWidth()-50,40);
-        emailField.setFont(new Font("Dialog", Font.PLAIN, 28));
+        emailField = createTextField(20, 160, getWidth() - 50, 40, 28);
         add(emailField);
 
-        //create password label
-        JLabel passwordLabel = new JLabel("Password:");
-
-        passwordLabel.setBounds(20,230,getWidth()-50,24);
-        passwordLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
+        // Password label and field
+        JLabel passwordLabel = createLabel("Password:", 20, 20, 230, getWidth() - 50, 24, SwingConstants.LEFT);
         add(passwordLabel);
-
-        //create password Field
-        passwordField = new JPasswordField();
-        passwordField.setBounds(20,270,getWidth()-50,40);
-        passwordField.setFont(new Font("Dialog", Font.PLAIN, 28));
+        passwordField = createPasswordField(20, 270, getWidth() - 50, 40, 28);
         add(passwordField);
 
-        //create login button
+        // Login button
         loginButton = new JButton("Login");
-        loginButton.setBounds(20,460,getWidth()-50,40);
-        passwordField.setFont(new Font("Dialog", Font.BOLD, 20));
-        loginButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String email = emailField.getText();
-
-                String password = String.valueOf(passwordField.getPassword());
-
-                customer user = DataAccessLayer.createSession(email, password);
-
-                if(user != null) {
-                    LoginGui.this.dispose();
-
-                    new AccountSelectionGui(user).setVisible(true);
-
-                    JOptionPane.showMessageDialog(null, "Login Successful");
-                } else {
-                    JOptionPane.showMessageDialog(LoginGui.this, "Invalid email or Password");
-                }
-            }
-        });
+        loginButton.setBounds(20, 460, getWidth() - 50, 40);
+        loginButton.setFont(new Font("Dialog", Font.BOLD, 20));
+        loginButton.addActionListener(new LoginActionListener());
         add(loginButton);
 
-        //create register Label
-        JLabel registerLabel = new JLabel("<html><a href=\"#\"> Don't have an account? Register Here</a></html>");
-        registerLabel.setBounds(0,510,getWidth()-10,30);
+        // Register link
+        JLabel registerLabel = new JLabel("<html><a href=\"#\">Don't have an account? Register Here</a></html>");
+        registerLabel.setBounds(0, 510, getWidth() - 10, 30);
         registerLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
         registerLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-        registerLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                LoginGui.this.dispose();
-
-                //new RegisterGui().setVisible(true);
-            }
-        });
+        registerLabel.addMouseListener(new RegisterMouseListener());
         add(registerLabel);
+    }
 
+    // Helper methods to create UI components with consistent properties
+    private JLabel createLabel(String text, int fontSize, int x, int y, int width, int height, int alignment) {
+        JLabel label = new JLabel(text);
+        label.setBounds(x, y, width, height);
+        label.setFont(new Font("Dialog", Font.PLAIN, fontSize));
+        label.setHorizontalAlignment(alignment);
+        return label;
+    }
 
+    private JTextField createTextField(int x, int y, int width, int height, int fontSize) {
+        JTextField textField = new JTextField();
+        textField.setBounds(x, y, width, height);
+        textField.setFont(new Font("Dialog", Font.PLAIN, fontSize));
+        return textField;
+    }
 
+    private JPasswordField createPasswordField(int x, int y, int width, int height, int fontSize) {
+        JPasswordField passwordField = new JPasswordField();
+        passwordField.setBounds(x, y, width, height);
+        passwordField.setFont(new Font("Dialog", Font.PLAIN, fontSize));
+        return passwordField;
+    }
 
+    // Action listener for the login button
+    private class LoginActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String email = emailField.getText();
+            String password = new String(passwordField.getPassword());
+
+            customer user = DataAccessLayer.createSession(email, password);
+
+            if (user != null) {
+                dispose();
+                new AccountSelectionGui(user).setVisible(true);
+                JOptionPane.showMessageDialog(null, "Login Successful");
+            } else {
+                JOptionPane.showMessageDialog(LoginGui.this, "Invalid email or password");
+            }
+        }
+    }
+
+    // Mouse listener for the register link
+    private class RegisterMouseListener extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            dispose();
+            //new RegisterGui().setVisible(true);
+        }
     }
 }

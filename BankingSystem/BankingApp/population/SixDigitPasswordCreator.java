@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class SixDigitPasswordCreator {
 
-    int numberOfCreatedPasswords = 100;
+    static int numberOfCreatedPasswords = 100;
     
     public static void main(String[] args) {
         Set<String> passwords = new HashSet<>();

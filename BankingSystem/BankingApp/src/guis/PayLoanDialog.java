@@ -13,9 +13,6 @@ public class PayLoanDialog extends JDialog implements ActionListener {
     private JButton payButton;
     private JButton cancelButton;
 
-
-    // Simulated loans data (loan ID -> [remaining balance, interest rate, number of installments])
-    //loans DB den cekilecek
     private Map<String, Loan> loans;
 
     public PayLoanDialog(Frame parent) {
@@ -26,39 +23,56 @@ public class PayLoanDialog extends JDialog implements ActionListener {
 
     private void initializeLoans() {
         loans = new HashMap<>();
-        loans.put("Loan 001", new Loan("Loan 001", 5000.0, 5.0, 12)); // 5000 balance, 5% interest, 12 installments
-        loans.put("Loan 002", new Loan("Loan 002", 10000.0, 4.0, 24)); // 10000 balance, 4% interest, 24 installments
-        loans.put("Loan 003", new Loan("Loan 003", 7500.0, 6.0, 18)); // 7500 balance, 6% interest, 18 installments
+        loans.put("Loan 001", new Loan("Loan 001", 5000.0, 5.0, 12));
+        loans.put("Loan 002", new Loan("Loan 002", 10000.0, 4.0, 24));
+        loans.put("Loan 003", new Loan("Loan 003", 7500.0, 6.0, 18));
     }
 
     private void setupUI() {
-        // Create components
-        JLabel loanLabel = new JLabel("Select Loan:");
-        loanComboBox = new JComboBox<>(loans.keySet().toArray(new String[0]));
+        // Set up dialog properties
+        setLayout(new BorderLayout(10, 10));
+        setSize(400, 300);
+        setLocationRelativeTo(null); // Center on screen
 
+        // Header label
+        JLabel headerLabel = new JLabel("Pay Loan", JLabel.CENTER);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        add(headerLabel, BorderLayout.NORTH);
+
+        // Main panel for form elements
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 5, 5));
+        add(formPanel, BorderLayout.CENTER);
+
+        // Loan selection label and combo box
+        JLabel loanLabel = new JLabel("Select Loan:");
+        formPanel.add(loanLabel);
+
+        loanComboBox = new JComboBox<>(loans.keySet().toArray(new String[0]));
+        loanComboBox.addActionListener(this);
+        formPanel.add(loanComboBox);
+
+        // Monthly payment label
         JLabel paymentLabel = new JLabel("Monthly Payment:");
-        monthlyPaymentLabel = new JLabel("0.0"); // Initially empty or default value
+        formPanel.add(paymentLabel);
+
+        monthlyPaymentLabel = new JLabel("0.0");
+        monthlyPaymentLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        formPanel.add(monthlyPaymentLabel);
+
+        // Buttons panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        add(buttonPanel, BorderLayout.SOUTH);
 
         payButton = new JButton("Pay");
-        cancelButton = new JButton("Cancel");
-
         payButton.addActionListener(this);
+        buttonPanel.add(payButton);
+
+        cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(this);
-        loanComboBox.addActionListener(this); // Update payment when loan is selected
+        buttonPanel.add(cancelButton);
 
-        // Layout
-        setLayout(new GridLayout(3, 2, 10, 10));
-
-        add(loanLabel);
-        add(loanComboBox);
-        add(paymentLabel);
-        add(monthlyPaymentLabel);
-        add(payButton);
-        add(cancelButton);
-
-        setSize(200, 300);
-        setLocationRelativeTo(null); // Center on screen
-        updateMonthlyPayment(); // Initialize the monthly payment display
+        // Initialize monthly payment display
+        updateMonthlyPayment();
     }
 
     @Override
@@ -68,7 +82,7 @@ public class PayLoanDialog extends JDialog implements ActionListener {
         } else if (e.getSource() == cancelButton) {
             dispose(); // Close the dialog
         } else if (e.getSource() == loanComboBox) {
-            updateMonthlyPayment(); // Update the monthly payment when a new loan is selected
+            updateMonthlyPayment(); // Update monthly payment when a new loan is selected
         }
     }
 
@@ -77,8 +91,10 @@ public class PayLoanDialog extends JDialog implements ActionListener {
         if (selectedLoan == null) return;
 
         Loan loan = loans.get(selectedLoan);
-        double monthlyPayment = calculateMonthlyPayment(loan.getRemainingBalance(), loan.getInterestRate(), loan.getInstallments());
-        monthlyPaymentLabel.setText(String.format("%.2f", monthlyPayment)); // Display formatted monthly payment
+        if (loan != null) {
+            double monthlyPayment = calculateMonthlyPayment(loan.getRemainingBalance(), loan.getInterestRate(), loan.getInstallments());
+            monthlyPaymentLabel.setText(String.format("$%.2f", monthlyPayment)); // Display formatted monthly payment
+        }
     }
 
     private double calculateMonthlyPayment(double principal, double interestRate, int installments) {
@@ -88,28 +104,30 @@ public class PayLoanDialog extends JDialog implements ActionListener {
 
     private void handlePayment() {
         String selectedLoan = (String) loanComboBox.getSelectedItem();
-        System.out.println(selectedLoan);
         if (selectedLoan == null) {
             JOptionPane.showMessageDialog(this, "Please select a loan.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         Loan loan = loans.get(selectedLoan);
-        double monthlyPayment = calculateMonthlyPayment(loan.getRemainingBalance(), loan.getInterestRate(), loan.getInstallments());
+        if (loan == null) {
+            JOptionPane.showMessageDialog(this, "Selected loan data not found.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-        // Deduct one installment's worth of payment
+        double monthlyPayment = calculateMonthlyPayment(loan.getRemainingBalance(), loan.getInterestRate(), loan.getInstallments());
         double newBalance = loan.getRemainingBalance() - monthlyPayment;
         loan.setRemainingBalance(newBalance);
 
         if (newBalance <= 0) {
             JOptionPane.showMessageDialog(this, "Loan fully paid!", "Success", JOptionPane.INFORMATION_MESSAGE);
             loans.remove(selectedLoan);
-            loanComboBox.removeItem(selectedLoan); // Remove fully paid loan
+            loanComboBox.removeItem(selectedLoan); // Remove fully paid loan from combo box
         } else {
-            JOptionPane.showMessageDialog(this, "Payment successful! Remaining balance: " + String.format("%.2f", newBalance), "Success", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Payment successful! Remaining balance: " + String.format("$%.2f", newBalance), "Success", JOptionPane.INFORMATION_MESSAGE);
         }
 
-        dispose(); // Close the dialog
+        updateMonthlyPayment(); // Update the displayed monthly payment after payment is made
     }
 
     // Loan class to encapsulate loan details
@@ -146,16 +164,4 @@ public class PayLoanDialog extends JDialog implements ActionListener {
             return installments;
         }
     }
-
-
-    /*
-    // Entry point for testing
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            PayLoanDialog dialog = new PayLoanDialog(null);
-            dialog.setVisible(true);
-        });
-    }
-
-     */
 }
