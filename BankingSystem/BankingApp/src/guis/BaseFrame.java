@@ -1,16 +1,16 @@
 package guis;
 
-import db_sys.User;
-
 import javax.swing.*;
+
+import dataAccess.customer;
 
 public abstract class BaseFrame extends JFrame{
 
     //store user info
-    protected User user;
+    protected customer user;
 
 
-    public BaseFrame(String title, User user){
+    public BaseFrame(String title, customer user){
         this.user = user;
 
         initialize(title);

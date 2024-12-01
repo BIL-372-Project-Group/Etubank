@@ -1,23 +1,31 @@
-## Getting Started
+### Steps to Run the Project
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+1. **Start the SQL Server**  
+   Ensure your SQL server is running.
 
-## Folder Structure
+2. **Create a New Schema**  
+   Set up a new database schema in your SQL server.
 
-The workspace contains two folders by default, where:
+3. **Execute SQL Scripts**  
+   Run the following scripts in order:  
+   - `createTable.sql`  
+   - `sampleTablePopulation.sql`
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+4. **Configure Database Connection**  
+   Update the database configuration in the `src/dataAccess/DataAccessLayer` file:
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+   ```java
+   // Database configuration
+   private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/etubank_test";
+   private static final String DB_USERNAME = "root";
+   private static final String DB_PASSWORD = "password";
+   ```
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+   Replace the placeholder values (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`) with your actual database details.
 
-## Dependency Management
+5. **Ensure MySQL Connector is Available**  
+   Verify that the `mysql-connector-j-9.1.0.jar` file in the `lib` directory is properly recognized by your IDE.  
+   - Add it to the project's classpath if necessary.
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
-
-## Banking Database Diagram
-
-![image](https://github.com/user-attachments/assets/3a4b1139-b5e8-484a-addd-317471e22a7f)
-
+6. **Run the Application**  
+   Execute the application to confirm it connects to the database and functions correctly.
