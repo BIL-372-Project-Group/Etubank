@@ -110,6 +110,15 @@ public class customer {
         return accounts;
     }
 
+    //getter of account array
+    public account[] getAccountArray() {
+        account[] accountArray = new account[accounts.size()];
+        for (int i = 0; i < accounts.size(); i++) {
+            accountArray[i] = accounts.get(i);
+        }   
+        return accountArray;
+    }
+
     public BigDecimal getBalance(){
         BigDecimal balance = new BigDecimal(0);
         for(account acc: accounts){

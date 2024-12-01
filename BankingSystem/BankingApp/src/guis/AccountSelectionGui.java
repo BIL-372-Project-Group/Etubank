@@ -12,6 +12,7 @@ public class AccountSelectionGui extends JFrame implements ActionListener {
     private customer user;
     private JComboBox<account> accountComboBox;
     private JButton selectButton;
+    public account selectedAccount;
 
     public AccountSelectionGui(customer user) {
         this.user = user;
@@ -19,12 +20,17 @@ public class AccountSelectionGui extends JFrame implements ActionListener {
         setSize(400, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+        setLocation(575,325);
 
         JLabel selectAccountLabel = new JLabel("Select an Account:");
         selectAccountLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(selectAccountLabel, BorderLayout.NORTH);
 
-        accountComboBox = new JComboBox<>(user.getAccounts().toArray(new account[0]));
+        account[] accounts = new account[user.getAccounts().size()];
+        for(int i = 0; i < user.getAccounts().size(); i++) {
+            accounts[i] = user.getAccounts().get(i);
+        }
+        accountComboBox = new JComboBox<>(user.getAccounts().toArray(accounts));
         add(accountComboBox, BorderLayout.CENTER);
 
         selectButton = new JButton("Select");
@@ -34,7 +40,7 @@ public class AccountSelectionGui extends JFrame implements ActionListener {
 
     @Override
 public void actionPerformed(ActionEvent e) {
-    account selectedAccount = (account) accountComboBox.getSelectedItem();
+    this.selectedAccount = (account) accountComboBox.getSelectedItem();
     if (selectedAccount != null) {
         new BankingAppGui(user, selectedAccount).setVisible(true);
         this.dispose();

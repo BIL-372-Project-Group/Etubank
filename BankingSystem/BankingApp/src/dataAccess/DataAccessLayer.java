@@ -20,8 +20,6 @@ public class DataAccessLayer {
     public static customer createSession(String email, String password) {
         try {
             System.out.println("Attempting to connect to the database...");
-            // Load the JDBC driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
             System.out.println("Connection established successfully!");
 
@@ -44,9 +42,6 @@ public class DataAccessLayer {
                 return temp;
             }
 
-        } catch (ClassNotFoundException e) {
-            System.out.println("JDBC Driver not found.");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.out.println("SQL Exception occurred.");
             e.printStackTrace();

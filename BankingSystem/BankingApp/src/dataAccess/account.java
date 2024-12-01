@@ -120,6 +120,7 @@ public class account {
         updateBalanceInDatabase();
         recipientAccount.updateBalanceInDatabase();
     }
+    
 
     private void updateBalanceInDatabase() {
         try (Connection connection = DriverManager.getConnection(DataAccessLayer.DB_URL, DataAccessLayer.DB_USERNAME, DataAccessLayer.DB_PASSWORD)) {

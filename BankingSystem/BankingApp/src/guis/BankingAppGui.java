@@ -15,8 +15,10 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
 
     public BankingAppGui(customer user, account selectedAccount) {
         super("Banking App", user);
+        System.out.println(selectedAccount);
         this.selectedAccount = selectedAccount;
-        addGuiComponents();
+        currentBalanceField.setText("$" + selectedAccount.balance);
+        setResizable(true);
     }
 
     @Override
@@ -43,7 +45,7 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
         add(currentBalanceLabel);
 
         //create current balance field
-        currentBalanceField = new JTextField("$" + selectedAccount.getBalance().toString());
+        currentBalanceField = new JTextField("$" + 0);
         currentBalanceField.setBounds(15,120,getWidth() -50,40);
         currentBalanceField.setFont(new Font("Dialog", Font.BOLD,16));
         currentBalanceField.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -68,12 +70,12 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
         add(withdrawButton);
 
         // past transaction button
-        JButton transactionButton =  new JButton("Past Transaction");
-        transactionButton.setBounds(15,300,getWidth() -50,50);
-        transactionButton.setFont(new Font("Dialog", Font.BOLD,22));
-        transactionButton.setHorizontalAlignment(SwingConstants.CENTER);
-        transactionButton.addActionListener(this);
-        add(transactionButton);
+        JButton pastTransactionButton =  new JButton("Past Transaction");
+        pastTransactionButton.setBounds(15,300,getWidth() -50,50);
+        pastTransactionButton.setFont(new Font("Dialog", Font.BOLD,22));
+        pastTransactionButton.setHorizontalAlignment(SwingConstants.CENTER);
+        pastTransactionButton.addActionListener(this);
+        add(pastTransactionButton);
 
         //transfer button
         JButton transferButton =  new JButton("Transfer");
@@ -83,9 +85,25 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
         transferButton.addActionListener(this);
         add(transferButton);
 
+        // Take loan button
+        JButton takeLoanButton = new JButton("Take Loan");
+        takeLoanButton.setBounds(15, 420, getWidth() - 50, 50);
+        takeLoanButton.setFont(new Font("Dialog", Font.BOLD, 22));
+        takeLoanButton.setHorizontalAlignment(SwingConstants.CENTER);
+        takeLoanButton.addActionListener(this);
+        add(takeLoanButton);
+
+        // Pay loan button
+        JButton payLoanButton = new JButton("Pay Loan");
+        payLoanButton.setBounds(15, 480, getWidth() - 50, 50);
+        payLoanButton.setFont(new Font("Dialog", Font.BOLD, 22));
+        payLoanButton.setHorizontalAlignment(SwingConstants.CENTER);
+        payLoanButton.addActionListener(this);
+        add(payLoanButton);
+
         //Logout button
         JButton logoutButton =  new JButton("Logout");
-        logoutButton.setBounds(15,450,getWidth() -50,50);
+        logoutButton.setBounds(15,540,getWidth() -50,50);
         logoutButton.setFont(new Font("Dialog", Font.BOLD,22));
         logoutButton.setHorizontalAlignment(SwingConstants.CENTER);
         logoutButton.addActionListener(this);
@@ -101,9 +119,20 @@ public class BankingAppGui extends BaseFrame implements ActionListener {
         //pressed logout
         if(buttonPressed.equalsIgnoreCase("Logout")) {
             new LoginGui().setVisible(true);
-
             this.dispose();
+            return;
+        }
 
+        //pressed take loan
+        if (buttonPressed.equalsIgnoreCase("Take Loan")) {
+            TakeLoanDialog takeLoanDialog = new TakeLoanDialog(this);
+            takeLoanDialog.setVisible(true);
+            return;
+        }
+        //pressed pay loan
+        if (buttonPressed.equalsIgnoreCase("Pay Loan")) {
+            PayLoanDialog payLoanDialog = new PayLoanDialog(this);
+            payLoanDialog.setVisible(true);
             return;
         }
 
