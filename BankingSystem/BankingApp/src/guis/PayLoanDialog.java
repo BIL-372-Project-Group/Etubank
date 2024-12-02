@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import bll.Loan;
 
 public class PayLoanDialog extends JDialog implements ActionListener {
     private JComboBox<String> loanComboBox;
